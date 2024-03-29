@@ -1,11 +1,5 @@
 package chess.domain.pieces.piece;
 
-import chess.domain.pieces.Bishop;
-import chess.domain.pieces.King;
-import chess.domain.pieces.Knight;
-import chess.domain.pieces.Queen;
-import chess.domain.pieces.Rook;
-import chess.domain.pieces.pawn.Pawn;
 import chess.domain.score.Score;
 import chess.domain.score.ScoreStatus;
 import chess.domain.square.Movement;
@@ -18,28 +12,6 @@ public abstract class Piece {
     public Piece(final Color color, final Type type) {
         this.color = color;
         this.type = type;
-    }
-
-    public static Piece of(final Color color, final Type type) {
-        if (type == Type.KING) {
-            return new King(color);
-        }
-        if (type == Type.QUEEN) {
-            return new Queen(color);
-        }
-        if (type == Type.BISHOP) {
-            return new Bishop(color);
-        }
-        if (type == Type.ROOK) {
-            return new Rook(color);
-        }
-        if (type == Type.KNIGHT) {
-            return new Knight(color);
-        }
-        if (type == Type.PAWN) {
-            return Pawn.of(color);
-        }
-        throw new IllegalArgumentException();
     }
 
     public abstract boolean canMove(final Movement movement, final Piece target);

@@ -127,6 +127,6 @@ public class BoardDao implements BoardRepository {
     private Piece createPiece(ResultSet resultSet) throws SQLException {
         Type type = Type.valueOf(resultSet.getString("p.type"));
         Color color = Color.valueOf(resultSet.getString("p.color"));
-        return Piece.of(color, type);
+        return type.getInstance(color);
     }
 }
