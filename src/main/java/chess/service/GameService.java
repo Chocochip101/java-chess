@@ -4,6 +4,7 @@ import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.game.Turn;
 import chess.domain.pieces.piece.Piece;
+import chess.domain.pieces.piece.Type;
 import chess.domain.square.File;
 import chess.domain.square.Rank;
 import chess.domain.square.Square;
@@ -27,7 +28,8 @@ public class GameService {
         Square targetSquare = Square.of(File.from(target.file()), Rank.from(target.rank()));
 
         game.movePiece(sourceSquare, targetSquare);
-        long pieceId = boardRepository.findPieceIdBySquare(sourceSquare, game.getRoomId()).orElseThrow();
+        long pieceId = boardRepository.findPieceIdBySquare(sourceSquare, game.getRoomId())
+                .orElseThrow(IllegalStateException::new);
         boardRepository.deleteBySquare(sourceSquare, game.getRoomId());
         boardRepository.deleteBySquare(targetSquare, game.getRoomId());
         boardRepository.save(targetSquare, pieceId, game.getRoomId());
@@ -39,14 +41,15 @@ public class GameService {
         if (pieces.isEmpty()) {
             return createGame(roomId);
         }
-        Turn turn = roomRepository.findTurnByRoomId(roomId).orElseThrow();
+        Turn turn = roomRepository.findTurnByRoomId(roomId)
+                .orElseThrow(IllegalStateException::new);
         return Game.load(roomId, pieces, turn);
     }
 
     private Game createGame(final long roomId) {
         ChessBoardFactory chessBoardFactory = new ChessBoardFactory();
         chessBoardFactory.createBoard().getPieces()
-                .forEach((key, value) -> boardRepository.save(key, value.type(), value.color(), roomId));
+                .forEach((key, value) -> boardRepository.save(key, Type.findByPiece(value), value.color(), roomId));
         return new Game(roomId, chessBoardFactory);
     }
 }

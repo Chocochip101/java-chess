@@ -2,7 +2,6 @@ package chess.domain.pieces.pawn;
 
 import chess.domain.pieces.piece.Color;
 import chess.domain.pieces.piece.Piece;
-import chess.domain.pieces.piece.Type;
 import chess.domain.square.Movement;
 
 public abstract class Pawn extends Piece {
@@ -12,7 +11,7 @@ public abstract class Pawn extends Piece {
     protected final int initialMove;
 
     protected Pawn(final Color color, final int initialRank, final int defaultMove, final int initialMove) {
-        super(color, Type.PAWN);
+        super(color);
         this.initialRank = initialRank;
         this.defaultMove = defaultMove;
         this.initialMove = initialMove;
@@ -31,6 +30,16 @@ public abstract class Pawn extends Piece {
             return isAttack(movement);
         }
         return isMove(movement);
+    }
+
+    @Override
+    public boolean isPawn() {
+        return true;
+    }
+
+    @Override
+    public boolean isKing() {
+        return false;
     }
 
     private boolean hasTargetPiece(final Piece target) {

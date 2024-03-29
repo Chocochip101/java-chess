@@ -20,6 +20,8 @@ public enum Type {
     PAWN(1, Pawn.class, Pawn::of),
     ;
 
+    private static final String INVALID_PIECE_TYPE = "기물이 존재하지 않습니다.";
+
     private static final Map<Class<? extends Piece>, Type> TYPE_BY_CLASS = new HashMap<>();
 
     static {
@@ -37,6 +39,15 @@ public enum Type {
         this.score = score;
         this.classType = classType;
         this.constructor = constructor;
+    }
+
+    public static Type findByPiece(final Piece piece) {
+        for (Map.Entry<Class<? extends Piece>, Type> entry : TYPE_BY_CLASS.entrySet()) {
+            if (entry.getKey().isInstance(piece)) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalStateException(INVALID_PIECE_TYPE);
     }
 
     public Piece getInstance(final Color color) {

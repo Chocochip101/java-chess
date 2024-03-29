@@ -7,14 +7,10 @@ import java.util.Objects;
 
 public abstract class Piece {
     private final Color color;
-    private final Type type;
 
-    public Piece(final Color color, final Type type) {
+    public Piece(final Color color) {
         this.color = color;
-        this.type = type;
     }
-
-    public abstract boolean canMove(final Movement movement, final Piece target);
 
     public boolean isSameColor(final Piece piece) {
         if (piece == null) {
@@ -23,24 +19,18 @@ public abstract class Piece {
         return color.equals(piece.color);
     }
 
-    public boolean isPawn() {
-        return this.type.equals(Type.PAWN);
-    }
+    public abstract boolean canMove(final Movement movement, final Piece target);
 
-    public boolean isKing() {
-        return this.type.equals(Type.KING);
-    }
+    public abstract boolean isPawn();
+
+    public abstract boolean isKing();
 
     public Color color() {
         return color;
     }
 
-    public Type type() {
-        return type;
-    }
-
-    public Score getScore(ScoreStatus scoreStatus) {
-        return scoreStatus.calculate(type.getScore());
+    public Score getScore(final ScoreStatus scoreStatus) {
+        return scoreStatus.calculate(Type.findByPiece(this).getScore());
     }
 
     @Override

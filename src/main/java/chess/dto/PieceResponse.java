@@ -1,6 +1,7 @@
 package chess.dto;
 
 import chess.domain.pieces.piece.Piece;
+import chess.domain.pieces.piece.Type;
 import chess.domain.square.Square;
 
 public record PieceResponse(int fileIndex, int rankIndex, String color, String type) {
@@ -9,7 +10,7 @@ public record PieceResponse(int fileIndex, int rankIndex, String color, String t
         int fileIndex = square.getFileIndex();
         int rankIndex = square.getRankIndex();
         String color = piece.color().name();
-        String type = piece.type().name();
+        String type = Type.findByPiece(piece).name();
         return new PieceResponse(fileIndex, rankIndex, color, type);
     }
 }
