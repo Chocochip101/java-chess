@@ -1,9 +1,7 @@
 package chess.repository;
 
-import static chess.fixture.RoomFixture.createBigChessRoom;
-import static chess.fixture.RoomFixture.createChessRoom;
-import static chess.fixture.RoomFixture.createSmallChessRoom;
-
+import chess.domain.Name;
+import chess.domain.game.Turn;
 import chess.domain.room.Room;
 import java.util.HashMap;
 import java.util.List;
@@ -11,20 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public class FakeRoomDao implements RoomRepository {
-    private final Map<Integer, Room> rooms = new HashMap<>();
-
-    public FakeRoomDao() {
-        initialize();
-    }
+    private final Map<Long, Room> rooms = new HashMap<>();
 
     @Override
-    public long save(final Room room) {
-        if (room.getRoomId() == null) {
-            rooms.put(rooms.size() + 1, Room.of((long) rooms.size() + 1, room.getUserId(), room.getName()));
-            return rooms.size();
-        }
-        rooms.put(rooms.size() + 1, room);
-        return rooms.size();
+    public long save(final Room room, final Turn turn) {
+        long roomId = rooms.size() + 1;
+        rooms.put(roomId, new Room(roomId, room.getUserId(), new Name(room.getName())));
+        return roomId;
     }
 
     @Override
@@ -41,9 +32,13 @@ public class FakeRoomDao implements RoomRepository {
                 .findAny();
     }
 
-    private void initialize() {
-        rooms.put(1, createChessRoom());
-        rooms.put(2, createBigChessRoom());
-        rooms.put(3, createSmallChessRoom());
+    @Override
+    public Optional<Turn> findTurnByRoomId(final long roomId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void updateTurn(final long roomId, final Turn turn) {
+
     }
 }

@@ -1,5 +1,6 @@
 package chess.service;
 
+import static chess.fixture.RoomFixture.createChessRoom;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -7,29 +8,43 @@ import chess.domain.board.BoardFactory;
 import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.game.Turn;
-import chess.domain.square.Movement;
+import chess.domain.square.File;
+import chess.domain.square.Rank;
+import chess.domain.square.Square;
 import chess.dto.SquareRequest;
-import chess.repository.FakeMovementDao;
-import java.util.List;
+import chess.repository.BoardRepository;
+import chess.repository.FakeBoardDao;
+import chess.repository.FakeRoomDao;
+import chess.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("게임 로직")
 class GameServiceTest {
-    FakeMovementDao moveRepository;
+    BoardRepository boardRepository;
+    RoomRepository roomRepository;
     GameService gameService;
 
     long roomId;
+    long pieceId;
+    Square square;
     BoardFactory boardFactory;
     Game game;
-    
+
     @BeforeEach
     void setUp() {
-        moveRepository = new FakeMovementDao();
-        gameService = new GameService(moveRepository);
+        boardRepository = new FakeBoardDao();
+        roomRepository = new FakeRoomDao();
 
-        roomId = 1L;
+        roomId = roomRepository.save(createChessRoom(), Turn.first());
+
+        pieceId = 1L;
+        square = Square.of(File.A, Rank.TWO);
+        boardRepository.save(square, pieceId, roomId);
+
+        gameService = new GameService(boardRepository, roomRepository);
+
         boardFactory = new ChessBoardFactory();
         game = new Game(roomId, boardFactory);
     }
@@ -38,22 +53,14 @@ class GameServiceTest {
     @Test
     void move() {
         //given
-        int movementSize = moveRepository.findAllByRoomId(roomId).size();
-
-        SquareRequest source = SquareRequest.from("b2");
-        SquareRequest target = SquareRequest.from("b4");
+        SquareRequest source = SquareRequest.from("a2");
+        SquareRequest target = SquareRequest.from("a4");
 
         //when
         gameService.move(game, source, target);
 
         //then
-        List<Movement> movements = moveRepository.findAllByRoomId(roomId);
-        assertAll(
-                () -> assertThat(movements).isNotNull(),
-                () -> assertThat(movements).hasSize(movementSize + 1),
-                () -> assertThat(movements.get(movementSize).isCross()).isTrue(),
-                () -> assertThat(movements.get(movementSize).calculateMaxDistance()).isEqualTo(2)
-        );
+        assertThat(boardRepository.findPieceIdBySquare(Square.of(File.A, Rank.FOUR), roomId)).isNotNull();
     }
 
     @DisplayName("게임을 불러온다")
@@ -61,7 +68,6 @@ class GameServiceTest {
     void loadGame() {
         //given
         Turn expectedTurn = Turn.first();
-        expectedTurn.next();
 
         //when
         Game loadGame = gameService.loadGame(roomId);

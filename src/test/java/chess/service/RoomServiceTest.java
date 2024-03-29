@@ -1,9 +1,13 @@
 package chess.service;
 
+import static chess.fixture.RoomFixture.createBigChessRoom;
+import static chess.fixture.RoomFixture.createChessRoom;
+import static chess.fixture.RoomFixture.createSmallChessRoom;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import chess.domain.game.Turn;
 import chess.domain.room.Room;
 import chess.repository.FakeRoomDao;
 import java.util.List;
@@ -17,9 +21,17 @@ class RoomServiceTest {
     FakeRoomDao roomRepository;
     RoomService roomService;
 
+    long chessRoomId;
+    long bigChessRoomId;
+    long smallChessRoomId;
+
     @BeforeEach
     void setup() {
         roomRepository = new FakeRoomDao();
+        chessRoomId = roomRepository.save(createChessRoom(), Turn.first());
+        bigChessRoomId = roomRepository.save(createBigChessRoom(), Turn.first());
+        smallChessRoomId = roomRepository.save(createSmallChessRoom(), Turn.first());
+
         roomService = new RoomService(roomRepository);
     }
 
@@ -33,10 +45,8 @@ class RoomServiceTest {
         List<String> roomNames = roomService.getRoomNames(userId);
 
         //then
-        assertAll(
-                () -> assertThat(roomNames).hasSize(2),
-                () -> assertThat(roomNames).containsExactly("BigChess", "SmallChess")
-        );
+        assertAll(() -> assertThat(roomNames).hasSize(2),
+                () -> assertThat(roomNames).containsExactly("BigChess", "SmallChess"));
     }
 
 

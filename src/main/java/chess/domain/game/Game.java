@@ -3,9 +3,7 @@ package chess.domain.game;
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
 import chess.domain.pieces.piece.Piece;
-import chess.domain.square.Movement;
 import chess.domain.square.Square;
-import java.util.List;
 import java.util.Map;
 
 public class Game {
@@ -15,20 +13,21 @@ public class Game {
     private final Board board;
     private final Turn turn;
 
+    private Game(final long roomId, final Board board, final Turn turn) {
+        this.roomId = roomId;
+        this.board = board;
+        this.turn = turn;
+    }
+
     public Game(final long roomId, final BoardFactory boardFactory) {
         this.roomId = roomId;
         this.turn = Turn.first();
         this.board = boardFactory.createBoard();
     }
 
-    public static Game load(final long roomId, final List<Movement> movements, final BoardFactory boardFactory) {
-        Game game = new Game(roomId, boardFactory);
-        Board board = game.board;
-        for (Movement movement : movements) {
-            board.move(movement.getSource(), movement.getTarget());
-        }
-        game.turn.proceedTurn(movements.size());
-        return game;
+    public static Game load(final long roomId, final Map<Square, Piece> pieces, final Turn turn) {
+        Board board = new Board(pieces);
+        return new Game(roomId, board, turn);
     }
 
     public void movePiece(final Square source, final Square target) {

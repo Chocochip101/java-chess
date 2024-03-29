@@ -1,5 +1,6 @@
 package chess.service;
 
+import chess.domain.game.Turn;
 import chess.domain.room.Room;
 import chess.repository.RoomRepository;
 import java.util.List;
@@ -26,7 +27,7 @@ public class RoomService {
                     throw new IllegalArgumentException(DUPLICATED_ROOM_NAME);
                 });
         Room room = Room.of(userId, name);
-        return roomRepository.save(room);
+        return roomRepository.save(room, Turn.first());
     }
 
     public long selectRoom(final long userId, final String name) {

@@ -5,8 +5,8 @@ import chess.controller.RoomController;
 import chess.controller.UserController;
 import chess.database.DatabaseInitializer;
 import chess.database.JdbcConnectionPool;
-import chess.repository.MovementDao;
-import chess.repository.MovementRepository;
+import chess.repository.BoardDao;
+import chess.repository.BoardRepository;
 import chess.repository.RoomDao;
 import chess.repository.RoomRepository;
 import chess.repository.UserDao;
@@ -26,11 +26,11 @@ public class Application {
         JdbcConnectionPool connectionPool = JdbcConnectionPool.getInstance();
         new DatabaseInitializer(connectionPool).initialize();
 
-        MovementRepository movementRepository = new MovementDao(connectionPool);
+        BoardRepository boardRepository = new BoardDao(connectionPool);
         RoomRepository roomRepository = new RoomDao(connectionPool);
         UserRepository userRepository = new UserDao(connectionPool);
 
-        GameService gameService = new GameService(movementRepository);
+        GameService gameService = new GameService(boardRepository, roomRepository);
         RoomService roomService = new RoomService(roomRepository);
         UserService userService = new UserService(userRepository);
 
