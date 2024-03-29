@@ -1,35 +1,44 @@
 package chess.controller;
 
+import chess.controller.command.Command;
+import chess.controller.command.EndCommand;
+import chess.controller.command.MoveCommand;
+import chess.controller.command.StartCommand;
+import chess.controller.command.StatusCommand;
 import chess.domain.game.Game;
 import chess.domain.game.GameResult;
 import chess.domain.pieces.piece.Piece;
 import chess.domain.square.Square;
 import chess.dto.GameCommand;
 import chess.dto.GameRequest;
-import chess.dto.MoveRequest;
 import chess.dto.PieceResponse;
-import chess.dto.SquareRequest;
 import chess.service.GameService;
 import chess.view.InputView;
 import chess.view.OutputView;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 public class GameController {
-    private static final String GAME_ALREADY_START = "게임이 이미 진행중입니다.";
     private static final String FIRST_START_EXCEPTION = "게임 시작을 위해 start를 입력해주세요.";
 
     private final InputView inputView;
     private final OutputView outputView;
     private final GameService gameService;
+    private final Map<GameCommand, Command> commands = new HashMap<>();
 
     public GameController(final InputView inputView, final OutputView outputView, final GameService gameService) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.gameService = gameService;
+
+        commands.put(GameCommand.START, new StartCommand());
+        commands.put(GameCommand.STATUS, new StatusCommand());
+        commands.put(GameCommand.MOVE, new MoveCommand());
+        commands.put(GameCommand.END, new EndCommand());
     }
 
     public void start(final long roomId) {
@@ -76,21 +85,9 @@ public class GameController {
 
     private GameCommand playOneRound(final Game game) {
         GameRequest request = inputView.readStartCommand();
-        GameCommand commandType = request.getCommand();
-        if (commandType == GameCommand.START) {
-            throw new IllegalArgumentException(GAME_ALREADY_START);
-        }
-        if (commandType == GameCommand.STATUS) {
-            outputView.printStatus(game.getResult());
-        }
-        if (commandType == GameCommand.MOVE) {
-            move(game, request);
-            GameResult gameResult = game.getResult();
-            if (gameResult.isGameOver()) {
-                return GameCommand.END;
-            }
-        }
-        return commandType;
+        Command command = commands.get(request.getCommand());
+        command.execute(game, request, outputView, gameService);
+        return request.getCommand();
     }
 
     private void printEndStatus(final Game game) {
@@ -99,13 +96,6 @@ public class GameController {
         outputView.printGameFinish();
         outputView.printBoard(createBoardResponse(game.getBoardStatus()));
         outputView.printStatus(gameResult);
-    }
-
-    private void move(final Game game, final GameRequest request) {
-        MoveRequest moveRequest = request.getMoveRequest();
-        SquareRequest source = SquareRequest.from(moveRequest.source());
-        SquareRequest target = SquareRequest.from(moveRequest.target());
-        gameService.move(game, source, target);
     }
 
     private List<PieceResponse> createBoardResponse(final Map<Square, Piece> pieces) {

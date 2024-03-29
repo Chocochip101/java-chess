@@ -15,7 +15,9 @@ public class RoomController {
     private final RoomService roomService;
     private final GameController gameController;
 
-    public RoomController(final InputView inputView, final OutputView outputView, final RoomService roomService,
+    public RoomController(final InputView inputView,
+                          final OutputView outputView,
+                          final RoomService roomService,
                           final GameController gameController) {
         this.inputView = inputView;
         this.outputView = outputView;
