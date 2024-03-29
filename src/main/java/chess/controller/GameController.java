@@ -66,7 +66,7 @@ public class GameController {
     }
 
     private Game loadGame(final long roomId) {
-        List<Movement> moves = gameService.findMoves(roomId);
+        List<Movement> moves = gameService.findAllMoves(roomId);
         return Game.load(roomId, moves, new ChessBoardFactory());
     }
 

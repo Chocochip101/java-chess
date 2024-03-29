@@ -34,7 +34,7 @@ class GameServiceTest {
         long roomId = 1L;
 
         //when
-        List<Movement> movements = gameService.findMoves(roomId);
+        List<Movement> movements = gameService.findAllMoves(roomId);
 
         //then
         assertArrayEquals(movements.toArray(), createMovements().toArray());

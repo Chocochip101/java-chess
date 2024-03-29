@@ -17,7 +17,7 @@ public class GameService {
         this.movementRepository = movementRepository;
     }
 
-    public List<Movement> findMoves(final long roomId) {
+    public List<Movement> findAllMoves(final long roomId) {
         return movementRepository.findAllByRoomId(roomId);
     }
 
