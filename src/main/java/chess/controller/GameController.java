@@ -1,10 +1,8 @@
 package chess.controller;
 
-import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.game.GameResult;
 import chess.domain.pieces.piece.Piece;
-import chess.domain.square.Movement;
 import chess.domain.square.Square;
 import chess.dto.GameCommand;
 import chess.dto.GameRequest;
@@ -35,7 +33,7 @@ public class GameController {
     }
 
     public void start(final long roomId) {
-        Game game = loadGame(roomId);
+        Game game = gameService.loadGame(roomId);
         GameResult gameResult = game.getResult();
 
         if (gameResult.isGameOver()) {
@@ -63,11 +61,6 @@ public class GameController {
             return command;
         }
         throw new IllegalArgumentException(FIRST_START_EXCEPTION);
-    }
-
-    private Game loadGame(final long roomId) {
-        List<Movement> moves = gameService.findAllMoves(roomId);
-        return Game.load(roomId, moves, new ChessBoardFactory());
     }
 
     private void play(final Game game) {

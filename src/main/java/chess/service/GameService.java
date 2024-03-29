@@ -1,5 +1,6 @@
 package chess.service;
 
+import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.square.File;
 import chess.domain.square.Movement;
@@ -17,10 +18,6 @@ public class GameService {
         this.movementRepository = movementRepository;
     }
 
-    public List<Movement> findAllMoves(final long roomId) {
-        return movementRepository.findAllByRoomId(roomId);
-    }
-
     public void move(final Game game, final SquareRequest source, final SquareRequest target) {
         File sourceFile = File.from(source.file());
         Rank sourceRank = Rank.from(source.rank());
@@ -29,10 +26,11 @@ public class GameService {
         Rank targetRank = Rank.from(target.rank());
 
         game.movePiece(Square.of(sourceFile, sourceRank), Square.of(targetFile, targetRank));
-        createMove(game.getRoomId(), source, target);
+        movementRepository.save(game.getRoomId(), Movement.of(source, target));
     }
 
-    private void createMove(final long roomId, final SquareRequest source, final SquareRequest target) {
-        movementRepository.save(roomId, Movement.of(source, target));
+    public Game loadGame(final long roomId) {
+        List<Movement> moves = movementRepository.findAllByRoomId(roomId);
+        return Game.load(roomId, moves, new ChessBoardFactory());
     }
 }
