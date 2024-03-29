@@ -62,30 +62,27 @@ public class GameResult {
     }
 
     public boolean isGameOver() {
-        long kingCount = pieces.values().stream().filter(Piece::isKing).count();
+        long kingCount = pieces.values().stream()
+                .filter(Piece::isKing)
+                .count();
         return kingCount != KING_COUNT;
     }
 
-    public WinnerResult getWinner() {
+    public WinnerResult getWinnerResult() {
+        return determineWinner().getResult();
+    }
+
+    private Winner determineWinner() {
         if (isGameOver()) {
-            return getWinnerWhenOver();
+            return Winner.from(findKing().color());
         }
-        return getCurrentWinner(calculateScore(Color.BLACK), calculateScore(Color.WHITE));
+        return Winner.of(calculateScore(Color.BLACK), calculateScore(Color.WHITE));
     }
 
-    private WinnerResult getWinnerWhenOver() {
-        Piece king = pieces.values().stream().filter(Piece::isKing).findAny()
+    private Piece findKing() {
+        return pieces.values().stream()
+                .filter(Piece::isKing)
+                .findAny()
                 .orElseThrow(() -> new IllegalStateException(NO_KING_FOUND));
-        return WinnerResult.from(king.color());
-    }
-
-    private WinnerResult getCurrentWinner(final Score blackScore, final Score whiteScore) {
-        if (blackScore.isBiggerThan(whiteScore)) {
-            return WinnerResult.BLACK;
-        }
-        if (whiteScore.isBiggerThan(blackScore)) {
-            return WinnerResult.WHITE;
-        }
-        return WinnerResult.TIE;
     }
 }

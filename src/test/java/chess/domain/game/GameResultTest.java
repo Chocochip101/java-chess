@@ -114,7 +114,7 @@ class GameResultTest {
         GameResult gameResult = new GameResult(pieces);
 
         //then
-        assertThat(gameResult.getWinner()).isEqualTo(WinnerResult.BLACK);
+        assertThat(gameResult.getWinnerResult()).isEqualTo(WinnerResult.BLACK);
     }
 
     @DisplayName("King이 모두 살아있을 경우, 점수가 높은 진영이 승리한다")
@@ -140,7 +140,7 @@ class GameResultTest {
         GameResult gameResult = new GameResult(pieces);
 
         //then
-        assertThat(gameResult.getWinner()).isEqualTo(WinnerResult.WHITE);
+        assertThat(gameResult.getWinnerResult()).isEqualTo(WinnerResult.WHITE);
     }
 
     @DisplayName("King이 모두 살아있을 경우, 점수가 동률이면 TIE를 반환한다")
@@ -163,6 +163,6 @@ class GameResultTest {
         GameResult gameResult = new GameResult(pieces);
 
         //then
-        assertThat(gameResult.getWinner()).isEqualTo(WinnerResult.TIE);
+        assertThat(gameResult.getWinnerResult()).isEqualTo(WinnerResult.TIE);
     }
 }

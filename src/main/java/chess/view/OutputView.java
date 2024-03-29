@@ -86,7 +86,7 @@ public class OutputView {
     }
 
     private void printWinner(final GameResult gameResult) {
-        System.out.printf(WINNER_FORMAT + System.lineSeparator(), gameResult.getWinner());
+        System.out.printf(WINNER_FORMAT + System.lineSeparator(), gameResult.getWinnerResult());
     }
 
     public void printUserEntranceMessage() {

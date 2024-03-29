@@ -3,6 +3,7 @@ package chess.domain.pieces.piece;
 public enum Color {
     WHITE,
     BLACK,
+    NONE,
     ;
 
     public boolean isSame(final String color) {
