@@ -12,6 +12,7 @@ import chess.dto.GameCommand;
 import chess.dto.GameRequest;
 import chess.dto.MoveRequest;
 import chess.dto.PieceResponse;
+import chess.dto.SquareRequest;
 import chess.service.GameService;
 import chess.view.InputView;
 import chess.view.OutputView;
@@ -111,13 +112,14 @@ public class GameController {
 
     private void move(final Game game, final GameRequest request) {
         MoveRequest moveRequest = request.getMoveRequest();
-        String[] source = moveRequest.source().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        File sourceFile = File.from(source[0]);
-        Rank sourceRank = Rank.from(source[1]);
 
-        String[] target = moveRequest.target().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        File targetFile = File.from(target[0]);
-        Rank targetRank = Rank.from(target[1]);
+        SquareRequest source = SquareRequest.from(moveRequest.source());
+        File sourceFile = File.from(source.file());
+        Rank sourceRank = Rank.from(source.rank());
+
+        SquareRequest target = SquareRequest.from(moveRequest.target());
+        File targetFile = File.from(target.file());
+        Rank targetRank = Rank.from(target.rank());
 
         game.movePiece(Square.of(sourceFile, sourceRank), Square.of(targetFile, targetRank));
         gameService.createMove(game.getRoomId(), moveRequest.source(), moveRequest.target());
