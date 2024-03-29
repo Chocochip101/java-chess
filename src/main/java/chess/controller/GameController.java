@@ -4,9 +4,7 @@ import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.game.GameResult;
 import chess.domain.pieces.piece.Piece;
-import chess.domain.square.File;
 import chess.domain.square.Movement;
-import chess.domain.square.Rank;
 import chess.domain.square.Square;
 import chess.dto.GameCommand;
 import chess.dto.GameRequest;
@@ -112,17 +110,9 @@ public class GameController {
 
     private void move(final Game game, final GameRequest request) {
         MoveRequest moveRequest = request.getMoveRequest();
-
         SquareRequest source = SquareRequest.from(moveRequest.source());
-        File sourceFile = File.from(source.file());
-        Rank sourceRank = Rank.from(source.rank());
-
         SquareRequest target = SquareRequest.from(moveRequest.target());
-        File targetFile = File.from(target.file());
-        Rank targetRank = Rank.from(target.rank());
-
-        game.movePiece(Square.of(sourceFile, sourceRank), Square.of(targetFile, targetRank));
-        gameService.createMove(game.getRoomId(), moveRequest.source(), moveRequest.target());
+        gameService.move(game, source, target);
     }
 
     private List<PieceResponse> createBoardResponse(final Map<Square, Piece> pieces) {

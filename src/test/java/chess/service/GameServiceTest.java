@@ -5,7 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import chess.domain.board.BoardFactory;
+import chess.domain.board.ChessBoardFactory;
+import chess.domain.game.Game;
 import chess.domain.square.Movement;
+import chess.dto.SquareRequest;
 import chess.repository.FakeMovementDao;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,23 +40,28 @@ class GameServiceTest {
         assertArrayEquals(movements.toArray(), createMovements().toArray());
     }
 
-    @DisplayName("움직임을 생성한다")
+    @DisplayName("기물이 움직인다")
     @Test
-    void createMove() {
+    void move() {
         //given
-        long roomId = 2L;
-        String source = "a2";
-        String target = "a3";
+        long roomId = 1L;
+        BoardFactory boardFactory = new ChessBoardFactory();
+        Game game = new Game(roomId, boardFactory);
+        int movementSize = moveRepository.findAllByRoomId(roomId).size();
+
+        SquareRequest source = SquareRequest.from("b2");
+        SquareRequest target = SquareRequest.from("b4");
 
         //when
-        gameService.createMove(roomId, source, target);
-        List<Movement> movements = moveRepository.findAllByRoomId(roomId);
+        gameService.move(game, source, target);
 
         //then
+        List<Movement> movements = moveRepository.findAllByRoomId(roomId);
         assertAll(
-                () -> assertThat(movements).hasSize(1),
-                () -> assertThat(movements.get(0).isCross()).isTrue(),
-                () -> assertThat(movements.get(0).calculateMaxDistance()).isEqualTo(1)
+                () -> assertThat(movements).isNotNull(),
+                () -> assertThat(movements).hasSize(movementSize + 1),
+                () -> assertThat(movements.get(movementSize).isCross()).isTrue(),
+                () -> assertThat(movements.get(movementSize).calculateMaxDistance()).isEqualTo(2)
         );
     }
 }
