@@ -37,7 +37,7 @@ CREATE TABLE If NOT EXISTS board
     FOREIGN KEY (piece_id) REFERENCES piece (piece_id)
 );
 
-INSERT INTO piece (type, color)
+INSERT IGNORE INTO piece (type, color)
 VALUES ('PAWN', 'WHITE'),
        ('PAWN', 'BLACK'),
        ('ROOK', 'WHITE'),
