@@ -1,6 +1,5 @@
 package chess.service;
 
-import chess.domain.board.Board;
 import chess.domain.board.ChessBoardFactory;
 import chess.domain.game.Game;
 import chess.domain.game.Turn;
@@ -30,6 +29,7 @@ public class GameService {
         game.movePiece(sourceSquare, targetSquare);
         long pieceId = boardRepository.findPieceIdBySquare(sourceSquare, game.getRoomId()).orElseThrow();
         boardRepository.deleteBySquare(sourceSquare, game.getRoomId());
+        boardRepository.deleteBySquare(targetSquare, game.getRoomId());
         boardRepository.save(targetSquare, pieceId, game.getRoomId());
         roomRepository.updateTurn(game.getRoomId(), game.getTurn());
     }
@@ -39,15 +39,13 @@ public class GameService {
         if (pieces.isEmpty()) {
             return createGame(roomId);
         }
-        Turn turn = roomRepository.findTurnByRoomId(roomId)
-                .orElseThrow();
+        Turn turn = roomRepository.findTurnByRoomId(roomId).orElseThrow();
         return Game.load(roomId, pieces, turn);
     }
 
     private Game createGame(final long roomId) {
         ChessBoardFactory chessBoardFactory = new ChessBoardFactory();
-        Board board = chessBoardFactory.createBoard();
-        board.getPieces()
+        chessBoardFactory.createBoard().getPieces()
                 .forEach((key, value) -> boardRepository.save(key, value.type(), value.color(), roomId));
         return new Game(roomId, chessBoardFactory);
     }
