@@ -9,6 +9,7 @@ import chess.domain.pieces.pawn.Pawn;
 import chess.domain.score.Score;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 public enum Type {
@@ -54,11 +55,10 @@ public enum Type {
     }
 
     public static Type findByPiece(final Piece piece) {
-        for (Map.Entry<Class<? extends Piece>, Type> entry : TYPE_BY_CLASS.entrySet()) {
-            if (entry.getKey().isInstance(piece)) {
-                return entry.getValue();
-            }
-        }
-        throw new IllegalStateException(INVALID_PIECE_TYPE);
+        return TYPE_BY_CLASS.entrySet().stream()
+                .filter(entry -> entry.getKey().isInstance(piece))
+                .map(Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(INVALID_PIECE_TYPE));
     }
 }
