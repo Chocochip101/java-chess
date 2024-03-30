@@ -80,13 +80,28 @@ public class BoardDao implements BoardRepository {
     }
 
     @Override
-    public void deleteBySquare(final Square square, final long roomId) {
-        final String query = "DELETE FROM board WHERE square = ? AND room_id = ?";
+    public void deleteBySquares(final long roomId, final Square... squares) {
+        if (squares.length == 0) {
+            return;
+        }
+
+        final StringBuilder queryBuilder = new StringBuilder("DELETE FROM board WHERE square IN (");
+        for (int i = 0; i < squares.length; i++) {
+            queryBuilder.append("?");
+            if (i < squares.length - 1) {
+                queryBuilder.append(",");
+            }
+        }
+        queryBuilder.append(") AND room_id = ?");
+
+        final String query = queryBuilder.toString();
         final Connection connection = connectionPool.getConnection();
-        try (final PreparedStatement preparedStatement = connection.prepareStatement(query,
-                Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, square.getName());
-            preparedStatement.setLong(2, roomId);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            int parameterIndex = 1;
+            for (Square square : squares) {
+                preparedStatement.setString(parameterIndex++, square.getName());
+            }
+            preparedStatement.setLong(parameterIndex, roomId);
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
@@ -94,6 +109,7 @@ public class BoardDao implements BoardRepository {
             connectionPool.releaseConnection(connection);
         }
     }
+
 
     @Override
     public Map<Square, Piece> findAllByRoomId(final long roomId) {

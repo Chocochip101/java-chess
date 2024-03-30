@@ -30,8 +30,7 @@ public class GameService {
         game.movePiece(sourceSquare, targetSquare);
         long pieceId = boardRepository.findPieceIdBySquare(sourceSquare, game.getRoomId())
                 .orElseThrow(IllegalStateException::new);
-        boardRepository.deleteBySquare(sourceSquare, game.getRoomId());
-        boardRepository.deleteBySquare(targetSquare, game.getRoomId());
+        boardRepository.deleteBySquares(game.getRoomId(), sourceSquare, targetSquare);
         boardRepository.save(targetSquare, pieceId, game.getRoomId());
         roomRepository.updateTurn(game.getRoomId(), game.getTurn());
     }

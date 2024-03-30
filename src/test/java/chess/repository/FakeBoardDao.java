@@ -29,13 +29,14 @@ public class FakeBoardDao implements BoardRepository {
     public Optional<Long> findPieceIdBySquare(final Square square, final long roomId) {
         return boards.stream()
                 .filter(board -> Objects.equals(board.square, square.getName()) && board.room_id == roomId)
-                .map(fakeBoard -> fakeBoard.piece_id)
-                .findAny();
+                .map(fakeBoard -> fakeBoard.piece_id).findAny();
     }
 
     @Override
-    public void deleteBySquare(final Square square, final long roomId) {
-        boards.removeIf(board -> board.square.equals(square.getName()) && board.room_id == roomId);
+    public void deleteBySquares(final long roomId, final Square... squares) {
+        for (Square square : squares) {
+            boards.removeIf(board -> board.square.equals(square.getName()) && board.room_id == roomId);
+        }
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface BoardRepository {
 
     Optional<Long> findPieceIdBySquare(Square square, long roomId);
 
-    void deleteBySquare(Square square, long roomId);
+    void deleteBySquares(final long roomId, final Square... squares);
 
     Map<Square, Piece> findAllByRoomId(long roomId);
 }
