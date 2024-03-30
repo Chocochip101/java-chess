@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS room
 (
     room_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name    VARCHAR(10) NOT NULL,
-    turn    CHAR(10) NOT NULL,
+    turn    CHAR(10)    NOT NULL,
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
