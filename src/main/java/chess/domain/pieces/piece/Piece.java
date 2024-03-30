@@ -30,7 +30,7 @@ public abstract class Piece {
     }
 
     public Score getScore(final ScoreStatus scoreStatus) {
-        return scoreStatus.calculate(Type.findByPiece(this).getScore());
+        return scoreStatus.calculate(Type.getScore(this));
     }
 
     @Override

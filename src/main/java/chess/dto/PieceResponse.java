@@ -10,7 +10,7 @@ public record PieceResponse(int fileIndex, int rankIndex, String color, String t
         int fileIndex = square.getFileIndex();
         int rankIndex = square.getRankIndex();
         String color = piece.color().name();
-        String type = Type.findByPiece(piece).name();
+        String type = Type.getName(piece);
         return new PieceResponse(fileIndex, rankIndex, color, type);
     }
 }

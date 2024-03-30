@@ -41,6 +41,18 @@ public enum Type {
         this.constructor = constructor;
     }
 
+    public Piece getInstance(final Color color) {
+        return constructor.apply(color);
+    }
+
+    public static Score getScore(final Piece piece) {
+        return Score.of(findByPiece(piece).score);
+    }
+
+    public static String getName(final Piece piece) {
+        return findByPiece(piece).name();
+    }
+
     public static Type findByPiece(final Piece piece) {
         for (Map.Entry<Class<? extends Piece>, Type> entry : TYPE_BY_CLASS.entrySet()) {
             if (entry.getKey().isInstance(piece)) {
@@ -48,13 +60,5 @@ public enum Type {
             }
         }
         throw new IllegalStateException(INVALID_PIECE_TYPE);
-    }
-
-    public Piece getInstance(final Color color) {
-        return constructor.apply(color);
-    }
-
-    public Score getScore() {
-        return Score.of(score);
     }
 }
