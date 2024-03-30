@@ -16,6 +16,16 @@ import org.junit.jupiter.api.Test;
 @DisplayName("킹")
 class KingTest {
 
+    @DisplayName("킹이 맞는지 검증한다")
+    @Test
+    void isKing() {
+        //given
+        Piece king = new King(Color.WHITE);
+
+        //when & then
+        assertThat(king.isKing()).isTrue();
+    }
+
     @Nested
     @DisplayName("킹이 움직일 수 있는 경우")
     class CanMove {
@@ -178,15 +188,5 @@ class KingTest {
             //then
             assertThat(king.canMove(movement, null)).isFalse();
         }
-    }
-
-    @DisplayName("킹이 맞는지 검증한다")
-    @Test
-    void isKing() {
-        //given
-        Piece king = new King(Color.WHITE);
-
-        //when & then
-        assertThat(king.isKing()).isTrue();
     }
 }

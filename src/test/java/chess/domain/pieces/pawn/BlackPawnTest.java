@@ -16,6 +16,16 @@ import org.junit.jupiter.api.Test;
 @DisplayName("검은 폰")
 class BlackPawnTest {
 
+    @DisplayName("폰이 맞는지 검증한다")
+    @Test
+    void isPawn() {
+        //given
+        Piece pawn = Pawn.of(Color.BLACK);
+
+        //when & then
+        assertThat(pawn.isPawn()).isTrue();
+    }
+
     @DisplayName("움직일 수 있는 경우")
     @Nested
     class CanMove {
@@ -130,15 +140,5 @@ class BlackPawnTest {
             assertThat(blackCanMoveToWhite).isFalse();
             assertThat(blackCanMoveToBlack).isFalse();
         }
-    }
-
-    @DisplayName("폰이 맞는지 검증한다")
-    @Test
-    void isPawn() {
-        //given
-        Piece pawn = Pawn.of(Color.BLACK);
-
-        //when & then
-        assertThat(pawn.isPawn()).isTrue();
     }
 }

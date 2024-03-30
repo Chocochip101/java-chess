@@ -6,19 +6,18 @@ import chess.domain.pieces.Knight;
 import chess.domain.pieces.Queen;
 import chess.domain.pieces.Rook;
 import chess.domain.pieces.pawn.Pawn;
-import chess.domain.score.Score;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
 public enum Type {
-    KING(0, King.class, King::new),
-    QUEEN(9, Queen.class, Queen::new),
-    ROOK(5, Rook.class, Rook::new),
-    BISHOP(3, Bishop.class, Bishop::new),
-    KNIGHT(2.5, Knight.class, Knight::new),
-    PAWN(1, Pawn.class, Pawn::of),
+    KING(King.class, King::new),
+    QUEEN(Queen.class, Queen::new),
+    ROOK(Rook.class, Rook::new),
+    BISHOP(Bishop.class, Bishop::new),
+    KNIGHT(Knight.class, Knight::new),
+    PAWN(Pawn.class, Pawn::of),
     ;
 
     private static final String INVALID_PIECE_TYPE = "기물이 존재하지 않습니다.";
@@ -31,23 +30,12 @@ public enum Type {
         }
     }
 
-    private final double score;
     private final Class<? extends Piece> classType;
     private final Function<Color, Piece> constructor;
 
-    Type(final double score, final Class<? extends Piece> classType,
-         final Function<Color, Piece> constructor) {
-        this.score = score;
+    Type(final Class<? extends Piece> classType, final Function<Color, Piece> constructor) {
         this.classType = classType;
         this.constructor = constructor;
-    }
-
-    public Piece getInstance(final Color color) {
-        return constructor.apply(color);
-    }
-
-    public static Score getScore(final Piece piece) {
-        return Score.of(findByPiece(piece).score);
     }
 
     public static String getName(final Piece piece) {
@@ -60,5 +48,9 @@ public enum Type {
                 .map(Entry::getValue)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(INVALID_PIECE_TYPE));
+    }
+
+    public Piece getInstance(final Color color) {
+        return constructor.apply(color);
     }
 }

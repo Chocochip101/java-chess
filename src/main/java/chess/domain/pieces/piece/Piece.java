@@ -1,5 +1,6 @@
 package chess.domain.pieces.piece;
 
+import chess.domain.score.PieceScore;
 import chess.domain.score.Score;
 import chess.domain.score.ScoreStatus;
 import chess.domain.square.Movement;
@@ -19,13 +20,19 @@ public abstract class Piece {
         return color.equals(piece.color);
     }
 
+    public boolean isSameColor(final Color color) {
+        return this.color.equals(color);
+    }
+
     public abstract boolean canMove(final Movement movement, final Piece target);
 
-    public boolean isPawn(){
+    public boolean isPawn() {
         return false;
-    };
+    }
 
-    public boolean isKing(){
+    ;
+
+    public boolean isKing() {
         return false;
     }
 
@@ -34,7 +41,7 @@ public abstract class Piece {
     }
 
     public Score getScore(final ScoreStatus scoreStatus) {
-        return scoreStatus.calculate(Type.getScore(this));
+        return scoreStatus.calculate(PieceScore.getScore(this));
     }
 
     @Override
