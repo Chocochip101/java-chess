@@ -1,6 +1,5 @@
 package chess.domain.square;
 
-import chess.dto.SquareRequest;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -17,15 +16,6 @@ public class Movement {
         validate(source, target);
         this.source = source;
         this.target = target;
-    }
-
-    public static Movement of(final SquareRequest source, final SquareRequest target) {
-        File sourceFile = File.from(source.file());
-        Rank sourceRank = Rank.from(source.rank());
-
-        File targetFile = File.from(target.file());
-        Rank targetRank = Rank.from(target.rank());
-        return new Movement(Square.of(sourceFile, sourceRank), Square.of(targetFile, targetRank));
     }
 
     private void validate(final Square source, final Square target) {
