@@ -47,14 +47,14 @@ public class GameResult {
 
     private double calculatePieceScore(final Color color) {
         return pieces.values().stream()
-                .filter(piece -> piece.color().equals(color) && !piece.isPawn())
+                .filter(piece -> piece.isSameColor(color) && !piece.isPawn())
                 .mapToDouble(piece -> piece.getScore(ScoreStatus.DEFAULT).getValue())
                 .sum();
     }
 
     private double calculatePawnScore(final Color color) {
         Map<Integer, List<Piece>> fileToPawn = pieces.entrySet().stream()
-                .filter(it -> it.getValue().color().equals(color) && it.getValue().isPawn())
+                .filter(it -> it.getValue().isSameColor(color) && it.getValue().isPawn())
                 .collect(groupingBy(it -> it.getKey().getFileIndex(),
                         mapping(Entry::getValue, Collectors.toList())));
 
