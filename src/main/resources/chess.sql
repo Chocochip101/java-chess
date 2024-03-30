@@ -8,13 +8,13 @@ USE chess;
 CREATE TABLE IF NOT EXISTS user
 (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name    CHAR(10) NOT NULL
+    name    VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS room
 (
     room_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name    CHAR(10) NOT NULL,
+    name    VARCHAR(10) NOT NULL,
     turn    CHAR(10) NOT NULL,
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES user (user_id)
