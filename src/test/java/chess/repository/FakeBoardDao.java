@@ -16,17 +16,17 @@ public class FakeBoardDao implements BoardRepository {
     List<FakeBoard> boards = new ArrayList<>();
 
     @Override
-    public void save(final Square square, final Type type, final Color color, final long roomId) {
+    public void save(final long roomId, final Square square, final Type type, final Color color) {
         boards.add(new FakeBoard(boards.size(), roomId, square.getName(), roomId));
     }
 
     @Override
-    public void save(final Square square, final long pieceId, final long roomId) {
+    public void save(final long roomId, final long pieceId, final Square square) {
         boards.add(new FakeBoard(boards.size() + 1, roomId, square.getName(), pieceId));
     }
 
     @Override
-    public Optional<Long> findPieceIdBySquare(final Square square, final long roomId) {
+    public Optional<Long> findPieceIdBySquare(final long roomId, final Square square) {
         return boards.stream()
                 .filter(board -> Objects.equals(board.square, square.getName()) && board.room_id == roomId)
                 .map(fakeBoard -> fakeBoard.piece_id).findAny();

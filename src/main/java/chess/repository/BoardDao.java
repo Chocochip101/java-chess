@@ -25,7 +25,7 @@ public class BoardDao implements BoardRepository {
     }
 
     @Override
-    public void save(final Square square, final Type type, final Color color, final long roomId) {
+    public void save(final long roomId, final Square square, final Type type, final Color color) {
         final String query = "INSERT INTO board (room_id, square, piece_id) VALUES (?, ?, (SELECT piece_id FROM piece WHERE type = ? AND color = ? LIMIT 1))";
         final Connection connection = connectionPool.getConnection();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(query,
@@ -43,7 +43,7 @@ public class BoardDao implements BoardRepository {
     }
 
     @Override
-    public void save(final Square square, final long pieceId, final long roomId) {
+    public void save(final long roomId, final long pieceId, final Square square) {
         final String query = "INSERT INTO board (room_id, square, piece_id) VALUES (?, ?, ?)";
         final Connection connection = connectionPool.getConnection();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(query,
@@ -60,7 +60,7 @@ public class BoardDao implements BoardRepository {
     }
 
     @Override
-    public Optional<Long> findPieceIdBySquare(final Square square, final long roomId) {
+    public Optional<Long> findPieceIdBySquare(final long roomId, final Square square) {
         final String query = "SELECT piece_id FROM board WHERE square = ? AND room_id = ?";
         final Connection connection = connectionPool.getConnection();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(query,

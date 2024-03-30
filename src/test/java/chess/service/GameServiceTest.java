@@ -41,7 +41,7 @@ class GameServiceTest {
 
         pieceId = 1L;
         square = Square.of(File.A, Rank.TWO);
-        boardRepository.save(square, pieceId, roomId);
+        boardRepository.save(roomId, pieceId, square);
 
         gameService = new GameService(boardRepository, roomRepository);
 
@@ -60,7 +60,7 @@ class GameServiceTest {
         gameService.move(game, source, target);
 
         //then
-        assertThat(boardRepository.findPieceIdBySquare(Square.of(File.A, Rank.FOUR), roomId)).isNotNull();
+        assertThat(boardRepository.findPieceIdBySquare(roomId, Square.of(File.A, Rank.FOUR))).isNotNull();
     }
 
     @DisplayName("게임을 불러온다")

@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface BoardRepository {
-    void save(Square square, Type type, Color color, long roomId);
+    void save(long roomId, Square square, Type type, Color color);
 
-    void save(Square square, long pieceId, long roomId);
+    void save(long roomId, long pieceId, Square square);
 
-    Optional<Long> findPieceIdBySquare(Square square, long roomId);
+    Optional<Long> findPieceIdBySquare(long roomId, Square square);
 
     void deleteBySquares(final long roomId, final Square... squares);
 

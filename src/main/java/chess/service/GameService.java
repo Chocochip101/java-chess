@@ -28,10 +28,10 @@ public class GameService {
         Square targetSquare = Square.of(File.from(target.file()), Rank.from(target.rank()));
 
         game.movePiece(sourceSquare, targetSquare);
-        long pieceId = boardRepository.findPieceIdBySquare(sourceSquare, game.getRoomId())
+        long pieceId = boardRepository.findPieceIdBySquare(game.getRoomId(), sourceSquare)
                 .orElseThrow(IllegalStateException::new);
         boardRepository.deleteBySquares(game.getRoomId(), sourceSquare, targetSquare);
-        boardRepository.save(targetSquare, pieceId, game.getRoomId());
+        boardRepository.save(game.getRoomId(), pieceId, targetSquare);
         roomRepository.updateTurn(game.getRoomId(), game.getTurn());
     }
 
@@ -48,7 +48,7 @@ public class GameService {
     private Game createGame(final long roomId) {
         ChessBoardFactory chessBoardFactory = new ChessBoardFactory();
         chessBoardFactory.createBoard().getPieces()
-                .forEach((key, value) -> boardRepository.save(key, Type.findByPiece(value), value.color(), roomId));
+                .forEach((key, value) -> boardRepository.save(roomId, key, Type.findByPiece(value), value.color()));
         return new Game(roomId, chessBoardFactory);
     }
 }
