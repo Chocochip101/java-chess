@@ -179,4 +179,14 @@ class KingTest {
             assertThat(king.canMove(movement, null)).isFalse();
         }
     }
+
+    @DisplayName("킹이 맞는지 검증한다")
+    @Test
+    void isKing() {
+        //given
+        Piece king = new King(Color.WHITE);
+
+        //when & then
+        assertThat(king.isKing()).isTrue();
+    }
 }

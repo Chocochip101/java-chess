@@ -21,9 +21,13 @@ public abstract class Piece {
 
     public abstract boolean canMove(final Movement movement, final Piece target);
 
-    public abstract boolean isPawn();
+    public boolean isPawn(){
+        return false;
+    };
 
-    public abstract boolean isKing();
+    public boolean isKing(){
+        return false;
+    }
 
     public Color color() {
         return color;

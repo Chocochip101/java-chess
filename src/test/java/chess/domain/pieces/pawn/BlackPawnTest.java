@@ -131,4 +131,14 @@ class BlackPawnTest {
             assertThat(blackCanMoveToBlack).isFalse();
         }
     }
+
+    @DisplayName("폰이 맞는지 검증한다")
+    @Test
+    void isPawn() {
+        //given
+        Piece pawn = Pawn.of(Color.BLACK);
+
+        //when & then
+        assertThat(pawn.isPawn()).isTrue();
+    }
 }

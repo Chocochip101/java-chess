@@ -37,11 +37,6 @@ public abstract class Pawn extends Piece {
         return true;
     }
 
-    @Override
-    public boolean isKing() {
-        return false;
-    }
-
     private boolean hasTargetPiece(final Piece target) {
         return target != null;
     }

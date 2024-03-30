@@ -14,14 +14,4 @@ public class Bishop extends Piece {
     public boolean canMove(final Movement movement, final Piece target) {
         return movement.isDiagonal();
     }
-
-    @Override
-    public boolean isPawn() {
-        return false;
-    }
-
-    @Override
-    public boolean isKing() {
-        return false;
-    }
 }

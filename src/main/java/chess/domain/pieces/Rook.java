@@ -14,14 +14,4 @@ public class Rook extends Piece {
     public boolean canMove(final Movement movement, final Piece target) {
         return movement.isCross();
     }
-
-    @Override
-    public boolean isPawn() {
-        return false;
-    }
-
-    @Override
-    public boolean isKing() {
-        return false;
-    }
 }
