@@ -55,9 +55,10 @@ class GameServiceTest {
         //given
         SquareRequest source = SquareRequest.from("a2");
         SquareRequest target = SquareRequest.from("a4");
+        gameService.loadGame(roomId);
 
         //when
-        gameService.move(game, source, target);
+        gameService.move(source, target);
 
         //then
         assertThat(boardRepository.findPieceIdBySquare(roomId, Square.of(File.A, Rank.FOUR))).isNotNull();
@@ -70,12 +71,12 @@ class GameServiceTest {
         Turn expectedTurn = Turn.first();
 
         //when
-        Game loadGame = gameService.loadGame(roomId);
+        gameService.loadGame(roomId);
 
         //then
         assertAll(
-                () -> assertThat(loadGame.getTurn()).isEqualTo(expectedTurn),
-                () -> assertThat(loadGame.getResult().isGameOver()).isFalse()
+                () -> assertThat(gameService.getTurn()).isEqualTo(expectedTurn),
+                () -> assertThat(gameService.getResult().isGameOver()).isFalse()
         );
     }
 }

@@ -5,21 +5,14 @@ import chess.controller.command.EndCommand;
 import chess.controller.command.MoveCommand;
 import chess.controller.command.StartCommand;
 import chess.controller.command.StatusCommand;
-import chess.domain.game.Game;
 import chess.domain.game.GameResult;
-import chess.domain.pieces.piece.Piece;
-import chess.domain.square.Square;
 import chess.dto.GameCommand;
 import chess.dto.GameRequest;
-import chess.dto.PieceResponse;
 import chess.service.GameService;
 import chess.view.InputView;
 import chess.view.OutputView;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 public class GameController {
@@ -42,12 +35,12 @@ public class GameController {
     }
 
     public void start(final long roomId) {
-        Game game = gameService.loadGame(roomId);
-        GameResult gameResult = game.getResult();
+        gameService.loadGame(roomId);
+        GameResult gameResult = gameService.getResult();
 
         if (gameResult.isGameOver()) {
             outputView.printAlreadyOver();
-            outputView.printBoard(createBoardResponse(game.getBoardStatus()));
+            outputView.printBoard(gameService.getGameStatus());
             outputView.printStatus(gameResult);
             return;
         }
@@ -55,7 +48,7 @@ public class GameController {
         outputView.printGameStartMessage();
         GameCommand gameCommand = requestUntilValidated(this::readStartCommand);
         if (gameCommand == GameCommand.START) {
-            play(game);
+            play();
         }
     }
 
@@ -72,38 +65,28 @@ public class GameController {
         throw new IllegalArgumentException(FIRST_START_EXCEPTION);
     }
 
-    private void play(final Game game) {
-        outputView.printBoard(createBoardResponse(game.getBoardStatus()));
-        outputView.printTurn(game.getTurn());
+    private void play() {
+        outputView.printBoard(gameService.getGameStatus());
+        outputView.printTurn(gameService.getTurn());
 
-        while (requestUntilValidated(() -> playOneRound(game)) != GameCommand.END) {
-            outputView.printBoard(createBoardResponse(game.getBoardStatus()));
-            outputView.printTurn(game.getTurn());
+        while (requestUntilValidated(this::playOneRound) != GameCommand.END) {
+            outputView.printBoard(gameService.getGameStatus());
+            outputView.printTurn(gameService.getTurn());
         }
-        printEndStatus(game);
+        printEndStatus();
     }
 
-    private GameCommand playOneRound(final Game game) {
+    private GameCommand playOneRound() {
         GameRequest request = inputView.readStartCommand();
         Command command = commands.get(request.getCommand());
-        command.execute(game, request, outputView, gameService);
+        command.execute(request, outputView, gameService);
         return request.getCommand();
     }
 
-    private void printEndStatus(final Game game) {
-        GameResult gameResult = game.getResult();
-
+    private void printEndStatus() {
         outputView.printGameFinish();
-        outputView.printBoard(createBoardResponse(game.getBoardStatus()));
-        outputView.printStatus(gameResult);
-    }
-
-    private List<PieceResponse> createBoardResponse(final Map<Square, Piece> pieces) {
-        List<PieceResponse> responses = new ArrayList<>();
-        for (Entry<Square, Piece> squareToPiece : pieces.entrySet()) {
-            responses.add(PieceResponse.of(squareToPiece.getKey(), squareToPiece.getValue()));
-        }
-        return responses;
+        outputView.printBoard(gameService.getGameStatus());
+        outputView.printStatus(gameService.getResult());
     }
 
     private <T> T requestUntilValidated(Supplier<T> supplier) {

@@ -55,8 +55,7 @@ public class GameResult {
     private double calculatePawnScore(final Color color) {
         Map<Integer, List<Piece>> fileToPawn = pieces.entrySet().stream()
                 .filter(it -> it.getValue().isSameColor(color) && it.getValue().isPawn())
-                .collect(groupingBy(it -> it.getKey().getFileIndex(),
-                        mapping(Entry::getValue, Collectors.toList())));
+                .collect(groupingBy(it -> it.getKey().getFileIndex(), mapping(Entry::getValue, Collectors.toList())));
 
         return findDefaultPawnScore(fileToPawn) + findHalfPawnScore(fileToPawn);
     }
