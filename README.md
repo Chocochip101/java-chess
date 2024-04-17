@@ -9,7 +9,7 @@
 
 # 객체 협력 관계
 ![object-relations](src/main/resources/static/chess-step-1.png)
-
+![object-relations](src/main/resources/static/chess-step-2.png)
 # ERD
 ![erd](src/main/resources/static/chess-erd.png)
 
